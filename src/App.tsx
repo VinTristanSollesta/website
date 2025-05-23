@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -14,11 +14,6 @@ import { keyframes } from "@mui/system";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import Home from "./pages/Home";
-import President from "./pages/President";
-import Principal from "./pages/Principal";
-import Formation from "./pages/Formation";
-import AdministrationAndFinance from "./pages/AdministrationAndFinance";
-import More from "./pages/More";
 import { ReactComponent as Logo } from "./assets/logo.svg";
 
 const fadeIn = keyframes`
@@ -33,19 +28,30 @@ const fadeIn = keyframes`
 `;
 
 const navItems = [
-  { label: "Home", path: "/" },
-  { label: "President", path: "/president" },
-  { label: "Principal", path: "/principal" },
-  { label: "Formation", path: "/formation" },
-  { label: "Administration and Finance", path: "/administration-and-finance" },
-  { label: "Human Resource", path: "/human-resource" },
-  { label: "Reservations", path: "/reservations" },
+  { label: "Home" },
+  { label: "President" },
+  { label: "Principal" },
+  { label: "Formation" },
+  { label: "Services" },
+  { label: "Finance" },
+  { label: "More" },
 ];
 
 function DropdownNav() {
   const [anchorEls, setAnchorEls] = React.useState<(null | HTMLElement)[]>(
     Array(navItems.length).fill(null)
   );
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleMenuOpen = (
     index: number,
@@ -66,20 +72,21 @@ function DropdownNav() {
     <AppBar
       position="fixed"
       sx={{
-        background:
-          "linear-gradient(180deg, rgba(0,0,0,0.85) 60%, rgba(0,0,0,0.6) 100%)",
+        background: isScrolled
+          ? "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.4) 100%)"
+          : "linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0) 100%)",
         boxShadow: "none",
-        backdropFilter: "blur(8px)",
         zIndex: 10,
+        transition: "background 0.3s ease-in-out",
       }}
     >
-      <Toolbar sx={{ justifyContent: "space-between", minHeight: "80px" }}>
+      <Toolbar sx={{ justifyContent: "flex-start", minHeight: "64px" }}>
         {/* Left: Logo and ADI Intranet */}
         <Box sx={{ display: "flex", alignItems: "center", minWidth: 220 }}>
           <Logo
             style={{
-              height: 48,
-              width: 48,
+              height: 40,
+              width: 40,
               marginRight: 16,
               borderRadius: "50%",
               padding: 4,
@@ -91,42 +98,37 @@ function DropdownNav() {
               color: "#fff",
               letterSpacing: 1,
               fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-              fontSize: "1.15rem",
+              fontSize: "1.25rem",
+              fontWeight: 400,
             }}
           >
             ADI Intranet
           </Typography>
         </Box>
         {/* Right: Nav Items */}
-        <Box sx={{ display: "flex", gap: 2, marginLeft: "auto" }}>
+        <Box sx={{ display: "flex", alignItems: "center", ml: "auto" }}>
           {navItems.map((item, idx) => (
-            <Box
-              key={item.label}
-              sx={{
-                animation: `${fadeIn} 0.5s ease-out ${idx * 0.1}s`,
-                "& .MuiButton-root": {
-                  transition: "all 0.3s ease",
-                  color: "rgba(255,255,255,0.92)",
-                  fontSize: "1rem",
-                  letterSpacing: 1,
-                  fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-                  textTransform: "none",
-                  "&:hover": {
-                    color: "#fff",
-                    backgroundColor: "rgba(255,255,255,0.08)",
-                  },
-                },
-              }}
-            >
+            <Box key={item.label} sx={{ ml: idx === 0 ? 4 : 2 }}>
               <Button
-                color="inherit"
-                onClick={(e) => handleMenuOpen(idx, e)}
+                endIcon={
+                  <span
+                    style={{
+                      display: "inline-block",
+                      transform: "translateY(2px)",
+                    }}
+                  >
+                    ▼
+                  </span>
+                }
                 sx={{
-                  fontSize: "1rem",
-                  letterSpacing: 1,
-                  fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+                  color: "#fff",
+                  fontWeight: 400,
+                  fontSize: "1.1rem",
                   textTransform: "none",
+                  minWidth: 80,
+                  px: 1.5,
                 }}
+                onClick={(e) => handleMenuOpen(idx, e)}
               >
                 {item.label}
               </Button>
@@ -139,55 +141,18 @@ function DropdownNav() {
                 PaperProps={{
                   sx: {
                     mt: 1,
-                    background:
-                      "linear-gradient(180deg, rgba(26,26,26,0.95) 0%, rgba(0,0,0,0.85) 100%)",
-                    backdropFilter: "blur(8px)",
-                    "& .MuiMenuItem-root": {
-                      transition: "all 0.2s ease",
-                      color: "rgba(255, 255, 255, 0.9)",
-                      fontSize: "1.15rem",
-                      letterSpacing: 1,
-                      fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-                      textTransform: "none",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                        transform: "translateX(5px)",
-                        color: "#FFFFFF",
-                      },
-                    },
+                    background: "#fff",
+                    boxShadow: 2,
+                    minWidth: 160,
                   },
                 }}
               >
-                <MenuItem
-                  component={Link}
-                  to={item.path}
-                  onClick={() => handleMenuClose(idx)}
-                  sx={{
-                    fontSize: "1.15rem",
-                    letterSpacing: 1,
-                    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-                    textTransform: "none",
-                    color: "rgba(255, 255, 255, 0.9)",
-                  }}
-                >
-                  {item.label}
+                <MenuItem onClick={() => handleMenuClose(idx)}>
+                  {item.label} Page
                 </MenuItem>
               </Menu>
             </Box>
           ))}
-        </Box>
-        {/* Right: Search Icon */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            minWidth: 60,
-            justifyContent: "flex-end",
-          }}
-        >
-          <IconButton sx={{ color: "#fff" }}>
-            <SearchIcon />
-          </IconButton>
         </Box>
       </Toolbar>
     </AppBar>
@@ -257,14 +222,6 @@ function App() {
         >
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/president" element={<President />} />
-            <Route path="/principal" element={<Principal />} />
-            <Route path="/formation" element={<Formation />} />
-            <Route
-              path="/administration-and-finance"
-              element={<AdministrationAndFinance />}
-            />
-            <Route path="/more" element={<More />} />
           </Routes>
         </Box>
       </Box>
