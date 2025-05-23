@@ -6,26 +6,11 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import { Link, Routes, Route } from "react-router-dom";
-import { alpha } from "@mui/material/styles";
-import { keyframes } from "@mui/system";
+import { Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import Home from "./pages/Home";
 import { ReactComponent as Logo } from "./assets/logo.svg";
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
 
 const navItems = [
   { label: "Home" },
